@@ -9,51 +9,68 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ folders, currentFolder, onSelectFolder }) => {
   return (
-    <div className="p-8 h-full flex flex-col bg-white dark:bg-[#0a0a0a]">
+    <div className="p-8 h-full flex flex-col bg-white dark:bg-slate-950 transition-colors">
       <div className="mb-12 hidden lg:block">
-        <h1 className="text-2xl font-light tracking-[0.2em] text-gray-800 dark:text-gray-100">GALERI<span className="font-bold">AITOR</span></h1>
-        <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500 mt-1 font-medium">Digital Art Gallery</p>
+        <h1 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          </div>
+          <span>GALERI<span className="text-blue-600">AITOR</span></span>
+        </h1>
+        <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mt-2 font-bold">Curaduría Digital</p>
       </div>
 
-      <nav className="flex-1">
-        <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-6">Explorar</h2>
-        <ul className="space-y-2">
-          <li>
-            <button 
-              onClick={() => onSelectFolder(null)}
-              className={`w-full text-left px-4 py-2.5 rounded-lg transition-soft text-sm flex items-center gap-3 ${
-                currentFolder === null 
-                ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 shadow-lg shadow-gray-200 dark:shadow-none' 
-                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
-              }`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-              Todas las imágenes
-            </button>
-          </li>
-        </ul>
+      <nav className="flex-1 space-y-10">
+        <section>
+          <h2 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 px-2">Navegación</h2>
+          <button 
+            onClick={() => onSelectFolder(null)}
+            className={`w-full group text-left px-4 py-3 rounded-2xl transition-all duration-300 text-sm flex items-center gap-3 font-semibold ${
+              currentFolder === null 
+              ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 translate-x-1' 
+              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <svg className={`w-4 h-4 ${currentFolder === null ? 'text-white' : 'text-slate-400 group-hover:text-blue-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+            Todas las imágenes
+          </button>
+        </section>
 
-        <div className="mt-10">
-          <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-6">Carpetas</h2>
-          <ul className="space-y-2">
+        <section>
+          <div className="flex items-center justify-between mb-4 px-2">
+            <h2 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Carpetas</h2>
+            <span className="text-[9px] bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full font-bold">{folders.length}</span>
+          </div>
+          <div className="space-y-1 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar">
             {folders.map(folder => (
-              <li key={folder}>
-                <button 
-                  onClick={() => onSelectFolder(folder)}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg transition-soft text-sm flex items-center gap-3 ${
-                    currentFolder === folder 
-                    ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 shadow-lg shadow-gray-200 dark:shadow-none' 
-                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
-                  }`}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
-                  {folder}
-                </button>
-              </li>
+              <button 
+                key={folder}
+                onClick={() => onSelectFolder(folder)}
+                className={`w-full group text-left px-4 py-3 rounded-2xl transition-all duration-300 text-sm flex items-center gap-3 font-semibold ${
+                  currentFolder === folder 
+                  ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 translate-x-1' 
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <svg className={`w-4 h-4 ${currentFolder === folder ? 'text-white' : 'text-slate-400 group-hover:text-blue-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                <span className="truncate">{folder}</span>
+              </button>
             ))}
-          </ul>
-        </div>
+          </div>
+        </section>
       </nav>
+
+      <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-900">
+        <div className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl flex items-center gap-3 border border-transparent dark:border-slate-800">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+            AS
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-900 dark:text-white">Aitor Sánchez</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium italic">Gestor de Galería</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

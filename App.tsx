@@ -91,18 +91,20 @@ const App: React.FC = () => {
   const toggleTheme = useCallback(() => setIsDarkMode(prev => !prev), []);
 
   return (
-    <div className="min-h-screen flex flex-col transition-colors duration-300 bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen flex flex-col transition-colors duration-500 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       {/* Mobile Header */}
-      <header className="lg:hidden bg-white dark:bg-[#0a0a0a] border-b border-gray-100 dark:border-gray-800 p-4 sticky top-0 z-40 flex items-center justify-between">
-        <h1 className="text-xl font-light tracking-widest text-gray-800 dark:text-gray-200">GALERI<span className="font-bold">AITOR</span></h1>
+      <header className="lg:hidden bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-900 p-4 sticky top-0 z-40 flex items-center justify-between">
+        <h1 className="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">
+          GALERI<span className="text-blue-600">AITOR</span>
+        </h1>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 text-gray-600 dark:text-gray-400 focus:outline-none"
+          className="p-2 text-slate-600 dark:text-slate-400 focus:outline-none"
         >
           {isSidebarOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           )}
         </button>
       </header>
@@ -110,9 +112,9 @@ const App: React.FC = () => {
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <div className={`
-          fixed lg:relative inset-0 z-30 lg:z-0 transform transition-transform duration-300 lg:translate-x-0
+          fixed lg:relative inset-0 z-30 lg:z-0 transform transition-transform duration-500 lg:translate-x-0
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          w-72 bg-white dark:bg-[#0a0a0a] border-r border-gray-100 dark:border-gray-800 shadow-xl lg:shadow-none overflow-y-auto
+          w-72 bg-white dark:bg-slate-950 border-r border-slate-100 dark:border-slate-900 shadow-xl lg:shadow-none overflow-y-auto
         `}>
           <Sidebar 
             folders={state.folders}
@@ -124,13 +126,13 @@ const App: React.FC = () => {
         {/* Overlay for mobile sidebar */}
         {isSidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/20 dark:bg-black/60 z-20 lg:hidden"
+            className="fixed inset-0 bg-black/30 dark:bg-black/70 z-20 lg:hidden backdrop-blur-sm transition-opacity"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50/30 dark:bg-[#0a0a0a]/50 p-4 lg:p-8">
+        <main className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950/50 p-4 lg:p-10">
           <Gallery 
             images={filteredImages}
             loading={state.loading}

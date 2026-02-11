@@ -2,23 +2,32 @@
 import { GaleriaItem } from '../types';
 
 /**
- * Servicio para obtener los datos de la galería.
- * Si hay un error o no hay conexión, devuelve un array vacío para no mostrar datos de muestra.
+ * Servicio para obtener los datos de la galería desde el API de Vercel.
  */
 export async function fetchGalleryData(): Promise<GaleriaItem[]> {
   try {
-    const response = await fetch('/api/gallery');
+    // Usamos una ruta absoluta relativa para asegurar que Vercel la resuelva
+    const response = await fetch('/api/gallery', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
     
+    if (response.status === 404) {
+      throw new Error("Ruta del API no encontrada (404). Verifica que 'api/gallery.ts' esté en la raíz del proyecto.");
+    }
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(`Status ${response.status}: ${errorData.message || response.statusText}`);
+      throw new Error(`Error ${response.status}: ${errorData.message || 'Error desconocido en el servidor'}`);
     }
 
     const data = await response.json();
     return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error("Error al cargar la galería desde Neon:", error);
-    // IMPORTANTE: Al devolver [] aseguramos que NO se muestren imágenes de muestra.
+  } catch (error: any) {
+    console.error("Error al cargar la galería desde Neon:", error.message);
+    // Devolvemos [] para evitar mostrar datos rotos si el API falla
     return [];
   }
 }
