@@ -88,31 +88,16 @@ const App: React.FC = () => {
     }));
   }, [filteredImages.length]);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleTheme = useCallback(() => setIsDarkMode(prev => !prev), []);
 
   return (
     <div className="min-h-screen flex flex-col transition-colors duration-300 bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100">
-      {/* Botón Global de Tema (Fijo arriba a la derecha) */}
-      <div className="fixed top-4 right-4 z-[100] flex items-center gap-2">
-         <button 
-            onClick={toggleTheme}
-            className="p-2.5 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-full transition-soft shadow-lg"
-            title="Alternar modo claro/oscuro"
-          >
-            {isDarkMode ? (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-            )}
-          </button>
-      </div>
-
       {/* Mobile Header */}
       <header className="lg:hidden bg-white dark:bg-[#0a0a0a] border-b border-gray-100 dark:border-gray-800 p-4 sticky top-0 z-40 flex items-center justify-between">
         <h1 className="text-xl font-light tracking-widest text-gray-800 dark:text-gray-200">GALERI<span className="font-bold">AITOR</span></h1>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 text-gray-600 dark:text-gray-400 focus:outline-none mr-12"
+          className="p-2 text-gray-600 dark:text-gray-400 focus:outline-none"
         >
           {isSidebarOpen ? (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -153,6 +138,8 @@ const App: React.FC = () => {
             onSetViewMode={handleSetViewMode}
             onOpenLightbox={handleOpenLightbox}
             currentFolder={state.currentFolder}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
           />
         </main>
       </div>

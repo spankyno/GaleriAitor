@@ -9,6 +9,8 @@ interface GalleryProps {
   onSetViewMode: (mode: ViewMode) => void;
   onOpenLightbox: (index: number) => void;
   currentFolder: string | null;
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
 }
 
 const Gallery: React.FC<GalleryProps> = ({ 
@@ -17,7 +19,9 @@ const Gallery: React.FC<GalleryProps> = ({
   viewMode, 
   onSetViewMode, 
   onOpenLightbox,
-  currentFolder
+  currentFolder,
+  isDarkMode,
+  onToggleTheme
 }) => {
   const copyToClipboard = (e: React.MouseEvent, url: string) => {
     e.stopPropagation();
@@ -51,7 +55,20 @@ const Gallery: React.FC<GalleryProps> = ({
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{images.length} elementos encontrados</p>
         </div>
 
-        <div className="flex items-center gap-3 self-start md:self-auto pr-12 lg:pr-0">
+        <div className="flex items-center gap-3 self-start md:self-auto">
+          {/* Botón de Tema integrado y alineado */}
+          <button 
+            onClick={onToggleTheme}
+            className="p-2.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl transition-soft shadow-sm"
+            title="Alternar modo claro/oscuro"
+          >
+            {isDarkMode ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            )}
+          </button>
+
           <div className="flex items-center gap-1 bg-white dark:bg-gray-900 p-1 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
             <button 
               onClick={() => onSetViewMode(ViewMode.NORMAL)}

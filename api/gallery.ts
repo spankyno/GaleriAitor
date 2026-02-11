@@ -1,40 +1,52 @@
 
-import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4';
+import { neon } from 'https://esm.sh/@neondatabase/serverless@0.9.4?bundle';
 
+/**
+ * Configuración para Vercel Edge Runtime.
+ */
 export const config = {
   runtime: 'edge',
 };
 
 export default async function handler(req: Request) {
+  // Obtenemos la URL de la base de datos de las variables de entorno de Vercel
   const databaseUrl = process.env.DATABASE_URL;
 
   if (!databaseUrl) {
-    console.error('Configuración faltante: DATABASE_URL');
+    console.error('[API] Error: DATABASE_URL no configurada.');
     return new Response(
-      JSON.stringify({ error: 'La variable DATABASE_URL no está configurada en Vercel.' }),
+      JSON.stringify({ 
+        error: 'Configuración incompleta', 
+        message: 'La variable DATABASE_URL no está definida en el panel de Vercel.' 
+      }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
   }
 
   try {
+    // Inicializamos la conexión con Neon
     const sql = neon(databaseUrl);
     
-    // Consulta simple a la tabla 'galeria'
-    const data = await sql`SELECT id, carpeta, url FROM galeria ORDER BY id ASC`;
+    // Ejecutamos la consulta a la tabla 'gallery'
+    const data = await sql`SELECT id, carpeta, url FROM gallery ORDER BY id ASC`;
 
+    // Si la consulta tiene éxito, devolvemos los datos
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
         'content-type': 'application/json',
-        'cache-control': 'no-store, max-age=0', // Evitar cache para pruebas
+        'cache-control': 'no-store, max-age=0',
       },
     });
   } catch (error: any) {
-    console.error('Error crítico en la función de API:', error.message);
+    // Log detallado en la consola de Vercel para depuración
+    console.error('[API] Error de Neon:', error.message);
+    
     return new Response(
       JSON.stringify({ 
-        error: 'Error al conectar con Neon', 
-        message: error.message 
+        error: 'Error de conexión a la base de datos', 
+        details: error.message,
+        hint: 'Verifica que la tabla "gallery" existe y que la URL tiene el formato correcto.'
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
