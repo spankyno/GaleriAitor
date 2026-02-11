@@ -1,0 +1,5 @@
+{
+  "name": "GaleriAitor",
+  "description": "Una elegante galería de imágenes minimalista con organización por carpetas y visor avanzado, conectada a una base de datos de Neon.",
+  "requestFramePermissions": []
+}
