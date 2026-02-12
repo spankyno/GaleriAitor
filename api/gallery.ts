@@ -1,55 +1,66 @@
 
-import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4?bundle';
+import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4?no-check';
 
 /**
  * Configuración para Vercel Edge Runtime.
- * El uso de ?bundle en la importación de esm.sh evita que se generen sentencias 'require'
- * que rompen el entorno de ejecución de Vercel Edge.
+ * El uso de ?no-check en esm.sh evita la introspección de tipos que a veces
+ * causa problemas en el bundling de Edge Functions.
  */
 export const config = {
   runtime: 'edge',
 };
 
 export default async function handler(req: Request) {
-  // En Vercel Edge, las variables de entorno se acceden vía process.env
-  // El usuario indica que la variable es VITE_DATABASE_URL
+  // Las variables de entorno en Vercel se inyectan en process.env
   const databaseUrl = process.env.VITE_DATABASE_URL;
 
   if (!databaseUrl) {
-    console.error("Falta VITE_DATABASE_URL");
+    console.error("[API ERROR] VITE_DATABASE_URL no definida en el entorno.");
     return new Response(
       JSON.stringify({ 
-        error: 'Error de Configuración', 
-        message: 'La variable VITE_DATABASE_URL no está configurada en Vercel.' 
+        error: 'Configuración incompleta', 
+        message: 'La variable de entorno VITE_DATABASE_URL no existe.' 
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
   }
 
   try {
+    // Inicializamos la conexión HTTP de Neon
     const sql = neon(databaseUrl);
     
-    // Ejecutamos la consulta a la tabla 'gallery'
-    const data = await sql`SELECT id, carpeta, url FROM gallery ORDER BY id ASC`;
+    /**
+     * Realizamos la consulta. 
+     * Se asume la existencia de la tabla 'gallery' con columnas 'id', 'carpeta', 'url'.
+     */
+    const rows = await sql`
+      SELECT id, carpeta, url 
+      FROM gallery 
+      ORDER BY id ASC
+    `;
 
-    // Si data no es un array, devolvemos un error controlado
-    if (!Array.isArray(data)) {
-        throw new Error("La base de datos no devolvió un formato válido.");
+    // Verificamos si la respuesta es válida
+    if (!rows) {
+      throw new Error("La consulta no devolvió resultados.");
     }
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify(rows), {
       status: 200,
       headers: {
         'content-type': 'application/json',
-        'cache-control': 'public, s-maxage=3600, stale-while-revalidate=600',
+        'cache-control': 'public, s-maxage=60, stale-while-revalidate=30',
+        'Access-Control-Allow-Origin': '*',
       },
     });
   } catch (error: any) {
-    console.error("Error en el handler de la galería:", error.message);
+    console.error("[API ERROR] Error de base de datos:", error.message);
+    
+    // Devolvemos el error detallado para ayudar en el diagnóstico durante el despliegue
     return new Response(
       JSON.stringify({ 
-        error: 'Database Connection Error', 
-        details: error.message 
+        error: 'Error de conexión a base de datos', 
+        details: error.message,
+        hint: 'Verifica que la tabla "gallery" exista y los permisos sean correctos.'
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
