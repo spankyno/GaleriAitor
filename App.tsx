@@ -36,14 +36,20 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const initData = async () => {
-      const data = await fetchGalleryData();
-      const uniqueFolders = Array.from(new Set(data.map(item => item.carpeta))).sort();
-      setState(prev => ({
-        ...prev,
-        images: data,
-        folders: uniqueFolders,
-        loading: false
-      }));
+      setState(prev => ({ ...prev, loading: true }));
+      try {
+        const data = await fetchGalleryData();
+        const uniqueFolders = Array.from(new Set(data.map(item => item.carpeta))).sort();
+        setState(prev => ({
+          ...prev,
+          images: data,
+          folders: uniqueFolders,
+          loading: false
+        }));
+      } catch (err) {
+        console.error("Error cargando la galería:", err);
+        setState(prev => ({ ...prev, loading: false }));
+      }
     };
     initData();
   }, []);
