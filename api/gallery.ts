@@ -1,23 +1,26 @@
 
-import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4';
+import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4?bundle';
 
 /**
  * Configuración para Vercel Edge Runtime.
- * Proporciona baja latencia global para la consulta a la base de datos.
+ * El uso de ?bundle en la importación de esm.sh evita que se generen sentencias 'require'
+ * que rompen el entorno de ejecución de Vercel Edge.
  */
 export const config = {
   runtime: 'edge',
 };
 
 export default async function handler(req: Request) {
-  // Obtenemos la URL de conexión desde la variable de entorno especificada
+  // En Vercel Edge, las variables de entorno se acceden vía process.env
+  // El usuario indica que la variable es VITE_DATABASE_URL
   const databaseUrl = process.env.VITE_DATABASE_URL;
 
   if (!databaseUrl) {
+    console.error("Falta VITE_DATABASE_URL");
     return new Response(
       JSON.stringify({ 
-        error: 'Configuración fallida', 
-        message: 'La variable VITE_DATABASE_URL no está definida en el entorno.' 
+        error: 'Error de Configuración', 
+        message: 'La variable VITE_DATABASE_URL no está configurada en Vercel.' 
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
@@ -26,8 +29,13 @@ export default async function handler(req: Request) {
   try {
     const sql = neon(databaseUrl);
     
-    // Consulta optimizada a la tabla 'gallery'
+    // Ejecutamos la consulta a la tabla 'gallery'
     const data = await sql`SELECT id, carpeta, url FROM gallery ORDER BY id ASC`;
+
+    // Si data no es un array, devolvemos un error controlado
+    if (!Array.isArray(data)) {
+        throw new Error("La base de datos no devolvió un formato válido.");
+    }
 
     return new Response(JSON.stringify(data), {
       status: 200,
@@ -37,10 +45,10 @@ export default async function handler(req: Request) {
       },
     });
   } catch (error: any) {
-    console.error('[API Error]:', error.message);
+    console.error("Error en el handler de la galería:", error.message);
     return new Response(
       JSON.stringify({ 
-        error: 'Error de base de datos', 
+        error: 'Database Connection Error', 
         details: error.message 
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
