@@ -2,29 +2,34 @@
 import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4?bundle';
 
 /**
- * Usamos el runtime de Node.js por defecto para mayor compatibilidad
- * con la resolución de módulos ESM en Vercel.
+ * Configuración para forzar el Edge Runtime en Vercel.
+ * Esto es CRÍTICO para permitir importaciones desde https://esm.sh
  */
+export const config = {
+  runtime: 'edge',
+};
 
 export default async function handler(req: Request) {
-  // Las variables de entorno en Vercel se inyectan en process.env
-  let databaseUrl = process.env.VITE_DATABASE_URL;
+  // Intentamos obtener la URL de ambas fuentes posibles
+  // DATABASE_URL es el estándar, VITE_DATABASE_URL es el que configuraste manualmente
+  let databaseUrl = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL;
 
   if (!databaseUrl) {
+    console.error("[API CONFIG ERROR]: No se encontró DATABASE_URL ni VITE_DATABASE_URL");
     return new Response(
       JSON.stringify({ 
         error: 'Configuración incompleta', 
-        message: 'La variable de entorno VITE_DATABASE_URL no está definida en Vercel.' 
+        message: 'No se detectó la variable de entorno de la base de datos en Vercel. Asegúrate de tener DATABASE_URL configurada.' 
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
   }
 
-  // LIMPIEZA DE CADENA: Eliminar comillas simples o dobles accidentales al inicio/final
+  // LIMPIEZA DE CADENA: Eliminar comillas simples o dobles que puedan venir de la UI de Vercel
   databaseUrl = databaseUrl.replace(/^['"]|['"]$/g, '').trim();
 
   try {
-    // Inicializamos la conexión
+    // Inicializamos el cliente Neon
     const sql = neon(databaseUrl);
     
     // Consulta a la tabla 'gallery'
@@ -43,15 +48,18 @@ export default async function handler(req: Request) {
       },
     });
   } catch (error: any) {
-    console.error("[API ERROR]:", error.message);
+    console.error("[API DATABASE ERROR]:", error.message);
     
     return new Response(
       JSON.stringify({ 
-        error: 'Database Connection Error', 
+        error: 'Error de Conexión a Base de Datos', 
         details: error.message,
-        hint: 'Revisa si la tabla "gallery" existe y si la URL de conexión es correcta (sin comillas extra).'
+        hint: 'Verifica que la tabla "gallery" exista en tu proyecto de Neon y que el DATABASE_URL sea correcto.'
       }),
-      { status: 500, headers: { 'content-type': 'application/json' } }
+      { 
+        status: 500, 
+        headers: { 'content-type': 'application/json' } 
+      }
     );
   }
 }
