@@ -1,24 +1,23 @@
 
-import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4?bundle';
+import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4';
 
 /**
  * Configuración para Vercel Edge Runtime.
- * Esto asegura que la función sea rápida y global.
+ * Proporciona baja latencia global para la consulta a la base de datos.
  */
 export const config = {
   runtime: 'edge',
 };
 
 export default async function handler(req: Request) {
-  // La variable configurada por el usuario es VITE_DATABASE_URL
+  // Obtenemos la URL de conexión desde la variable de entorno especificada
   const databaseUrl = process.env.VITE_DATABASE_URL;
 
   if (!databaseUrl) {
-    console.error('[API] Error: VITE_DATABASE_URL no encontrada en el entorno.');
     return new Response(
       JSON.stringify({ 
-        error: 'Error de configuración', 
-        message: 'La variable VITE_DATABASE_URL no está definida en Vercel.' 
+        error: 'Configuración fallida', 
+        message: 'La variable VITE_DATABASE_URL no está definida en el entorno.' 
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
     );
@@ -27,7 +26,7 @@ export default async function handler(req: Request) {
   try {
     const sql = neon(databaseUrl);
     
-    // Consulta a la tabla 'gallery' según lo corregido por el usuario
+    // Consulta optimizada a la tabla 'gallery'
     const data = await sql`SELECT id, carpeta, url FROM gallery ORDER BY id ASC`;
 
     return new Response(JSON.stringify(data), {
@@ -38,10 +37,10 @@ export default async function handler(req: Request) {
       },
     });
   } catch (error: any) {
-    console.error('[API] Error de base de datos:', error.message);
+    console.error('[API Error]:', error.message);
     return new Response(
       JSON.stringify({ 
-        error: 'Database Error', 
+        error: 'Error de base de datos', 
         details: error.message 
       }),
       { status: 500, headers: { 'content-type': 'application/json' } }
