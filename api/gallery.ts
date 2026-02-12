@@ -1,38 +1,37 @@
 
-import { neon } from 'https://esm.sh/@neondatabase/serverless@0.10.4?bundle';
+import { neon } from '@neondatabase/serverless';
 
 /**
- * Configuración para forzar el Edge Runtime en Vercel.
- * Esto es CRÍTICO para permitir importaciones desde https://esm.sh
+ * Handler de la API para Vercel.
+ * Se ejecuta en el runtime de Node.js por defecto para evitar problemas con esquemas URL externos.
  */
-export const config = {
-  runtime: 'edge',
-};
-
 export default async function handler(req: Request) {
-  // Intentamos obtener la URL de ambas fuentes posibles
-  // DATABASE_URL es el estándar, VITE_DATABASE_URL es el que configuraste manualmente
+  // En Vercel, DATABASE_URL es la variable estándar para Neon
+  // Usamos VITE_DATABASE_URL como fallback si el usuario la configuró así manualmente
   let databaseUrl = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL;
 
+  console.log("DATABASE_URL detectada:", !!databaseUrl);
+
   if (!databaseUrl) {
-    console.error("[API CONFIG ERROR]: No se encontró DATABASE_URL ni VITE_DATABASE_URL");
     return new Response(
       JSON.stringify({ 
         error: 'Configuración incompleta', 
-        message: 'No se detectó la variable de entorno de la base de datos en Vercel. Asegúrate de tener DATABASE_URL configurada.' 
+        message: 'La variable DATABASE_URL no está definida en el entorno de Vercel.' 
       }),
-      { status: 500, headers: { 'content-type': 'application/json' } }
+      { 
+        status: 500, 
+        headers: { 'content-type': 'application/json' } 
+      }
     );
   }
 
-  // LIMPIEZA DE CADENA: Eliminar comillas simples o dobles que puedan venir de la UI de Vercel
+  // LIMPIEZA DE CADENA: Eliminar posibles comillas accidentales
   databaseUrl = databaseUrl.replace(/^['"]|['"]$/g, '').trim();
 
   try {
-    // Inicializamos el cliente Neon
     const sql = neon(databaseUrl);
     
-    // Consulta a la tabla 'gallery'
+    // Consulta optimizada
     const rows = await sql`
       SELECT id, carpeta, url 
       FROM gallery 
@@ -48,13 +47,13 @@ export default async function handler(req: Request) {
       },
     });
   } catch (error: any) {
-    console.error("[API DATABASE ERROR]:", error.message);
+    console.error("[API ERROR]:", error.message);
     
     return new Response(
       JSON.stringify({ 
-        error: 'Error de Conexión a Base de Datos', 
+        error: 'Database Connection Error', 
         details: error.message,
-        hint: 'Verifica que la tabla "gallery" exista en tu proyecto de Neon y que el DATABASE_URL sea correcto.'
+        hint: 'Revisa si la tabla "gallery" existe en Neon y si la URL de conexión en DATABASE_URL es correcta.'
       }),
       { 
         status: 500, 
