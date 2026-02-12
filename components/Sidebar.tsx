@@ -9,7 +9,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ folders, currentFolder, onSelectFolder }) => {
   return (
-    <div className="p-8 h-full flex flex-col bg-white dark:bg-slate-950 transition-colors border-r border-slate-100 dark:border-slate-900">
+    <div className="p-8 h-full flex flex-col bg-white dark:bg-slate-950 transition-colors">
       <div className="mb-14 hidden lg:block">
         <h1 className="text-2xl font-black tracking-tighter text-slate-950 dark:text-white flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -17,17 +17,17 @@ const Sidebar: React.FC<SidebarProps> = ({ folders, currentFolder, onSelectFolde
           </div>
           <span className="leading-tight">GALERI<span className="text-blue-600">AITOR</span></span>
         </h1>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400 dark:text-slate-300 mt-3 font-extrabold">Gestor de Portafolio</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400 dark:text-slate-300 mt-3 font-extrabold">Galería de imágenes</p>
       </div>
 
-      <nav className="flex-1 space-y-12">
+      <nav className="flex-1 space-y-10 overflow-y-auto custom-scrollbar pr-2">
         <section>
-          <h2 className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-5 px-2">Navegación</h2>
+          <h2 className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 px-2">Navegación</h2>
           <button 
             onClick={() => onSelectFolder(null)}
-            className={`w-full group text-left px-5 py-4 rounded-[1.25rem] transition-all duration-300 text-sm flex items-center gap-4 font-bold ${
+            className={`w-full group text-left px-5 py-3.5 rounded-2xl transition-all duration-300 text-sm flex items-center gap-4 font-bold ${
               currentFolder === null 
-              ? 'bg-blue-600 text-white shadow-2xl shadow-blue-500/40 translate-x-1' 
+              ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 translate-x-1' 
               : 'text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
@@ -37,18 +37,18 @@ const Sidebar: React.FC<SidebarProps> = ({ folders, currentFolder, onSelectFolde
         </section>
 
         <section>
-          <div className="flex items-center justify-between mb-5 px-2">
+          <div className="flex items-center justify-between mb-4 px-2">
             <h2 className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Colecciones</h2>
             <span className="text-[10px] bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-lg font-black border border-slate-200 dark:border-slate-800">{folders.length}</span>
           </div>
-          <div className="space-y-1.5 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-1">
             {folders.map(folder => (
               <button 
                 key={folder}
                 onClick={() => onSelectFolder(folder)}
-                className={`w-full group text-left px-5 py-4 rounded-[1.25rem] transition-all duration-300 text-sm flex items-center gap-4 font-bold ${
+                className={`w-full group text-left px-5 py-3.5 rounded-2xl transition-all duration-300 text-sm flex items-center gap-4 font-bold ${
                   currentFolder === folder 
-                  ? 'bg-blue-600 text-white shadow-2xl shadow-blue-500/40 translate-x-1' 
+                  ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 translate-x-1' 
                   : 'text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >

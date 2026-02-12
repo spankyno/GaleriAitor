@@ -11,11 +11,17 @@ export enum ViewMode {
   LIST = 'list'
 }
 
+export enum ImageFitMode {
+  COVER = 'cover',
+  CONTAIN = 'contain'
+}
+
 export interface GalleryState {
   images: GaleriaItem[];
   folders: string[];
-  currentFolder: string | null; // null means "All Images"
+  currentFolder: string | null;
   loading: boolean;
   viewMode: ViewMode;
+  imageFit: ImageFitMode;
   selectedImageIndex: number | null;
 }
