@@ -2,36 +2,33 @@
 import { neon } from '@neondatabase/serverless';
 
 /**
- * Handler de la API para Vercel.
- * Se ejecuta en el runtime de Node.js por defecto para evitar problemas con esquemas URL externos.
+ * Forzamos el uso del Edge Runtime de Vercel. 
+ * Es extremadamente eficiente para peticiones SQL rápidas.
  */
-export default async function handler(req: Request) {
-  // En Vercel, DATABASE_URL es la variable estándar para Neon
-  // Usamos VITE_DATABASE_URL como fallback si el usuario la configuró así manualmente
-  let databaseUrl = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL;
+export const config = {
+  runtime: 'edge',
+};
 
-  console.log("DATABASE_URL detectada:", !!databaseUrl);
+export default async function handler(req: Request) {
+  const databaseUrl = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL;
 
   if (!databaseUrl) {
     return new Response(
       JSON.stringify({ 
         error: 'Configuración incompleta', 
-        message: 'La variable DATABASE_URL no está definida en el entorno de Vercel.' 
+        message: 'DATABASE_URL no encontrada en las variables de entorno.' 
       }),
-      { 
-        status: 500, 
-        headers: { 'content-type': 'application/json' } 
-      }
+      { status: 500, headers: { 'content-type': 'application/json' } }
     );
   }
 
-  // LIMPIEZA DE CADENA: Eliminar posibles comillas accidentales
-  databaseUrl = databaseUrl.replace(/^['"]|['"]$/g, '').trim();
+  // Limpiar posibles comillas del string de conexión
+  const cleanUrl = databaseUrl.replace(/^['"]|['"]$/g, '').trim();
 
   try {
-    const sql = neon(databaseUrl);
+    const sql = neon(cleanUrl);
     
-    // Consulta optimizada
+    // Ejecutamos la consulta con un timeout implícito del runtime
     const rows = await sql`
       SELECT id, carpeta, url 
       FROM gallery 
@@ -42,23 +39,18 @@ export default async function handler(req: Request) {
       status: 200,
       headers: {
         'content-type': 'application/json',
-        'cache-control': 'public, s-maxage=10, stale-while-revalidate=5',
         'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-store, max-age=0'
       },
     });
   } catch (error: any) {
-    console.error("[API ERROR]:", error.message);
-    
+    console.error("[DATABASE ERROR]:", error.message);
     return new Response(
       JSON.stringify({ 
-        error: 'Database Connection Error', 
-        details: error.message,
-        hint: 'Revisa si la tabla "gallery" existe en Neon y si la URL de conexión en DATABASE_URL es correcta.'
+        error: 'Error de base de datos', 
+        details: error.message 
       }),
-      { 
-        status: 500, 
-        headers: { 'content-type': 'application/json' } 
-      }
+      { status: 500, headers: { 'content-type': 'application/json' } }
     );
   }
 }
