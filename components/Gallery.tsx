@@ -58,7 +58,7 @@ const Gallery: React.FC<GalleryProps> = ({
         </div>
         <div className="text-center space-y-2">
           <p className="text-slate-950 dark:text-white font-black text-2xl tracking-tight">Sincronizando Archivo</p>
-          <p className="text-slate-400 dark:text-slate-500 text-sm font-bold uppercase tracking-widest">Protocolo Neon-Edge Activo</p>
+          <p className="text-slate-500 dark:text-slate-300 text-sm font-bold uppercase tracking-widest">Conexión Neon-Edge Master</p>
         </div>
       </div>
     );
@@ -71,7 +71,7 @@ const Gallery: React.FC<GalleryProps> = ({
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-2 h-8 bg-blue-600 rounded-full shadow-lg shadow-blue-500/20"></div>
-            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 dark:text-slate-500">Repositorio en Línea</span>
+            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 dark:text-slate-300">Repositorio en Línea</span>
           </div>
           <h2 className="text-6xl font-black text-slate-950 dark:text-white tracking-tighter">
             {currentFolder || 'Archivo Maestro'}
@@ -79,12 +79,12 @@ const Gallery: React.FC<GalleryProps> = ({
           <div className="flex items-center gap-4 pt-2">
             <div className="flex -space-x-3">
               {[1,2,3,4].map(i => (
-                <div key={i} className="w-8 h-8 rounded-2xl bg-slate-100 dark:bg-slate-900 border-2 border-white dark:border-slate-950 shadow-sm overflow-hidden flex items-center justify-center text-[10px] font-bold text-slate-400">
+                <div key={i} className="w-8 h-8 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-950 shadow-sm overflow-hidden flex items-center justify-center text-[10px] font-bold text-slate-400 dark:text-slate-500">
                   {i}
                 </div>
               ))}
             </div>
-            <p className="text-sm font-bold text-slate-500 dark:text-slate-400">
+            <p className="text-sm font-bold text-slate-500 dark:text-slate-300">
               <span className="text-blue-600 dark:text-blue-500 font-black">{images.length}</span> activos digitales detectados
             </p>
           </div>
@@ -127,14 +127,14 @@ const Gallery: React.FC<GalleryProps> = ({
       </div>
 
       {images.length === 0 ? (
-        <div className="text-center py-44 bg-white/40 dark:bg-slate-900/20 rounded-[4rem] border-2 border-dashed border-slate-200 dark:border-slate-800 transition-colors">
-          <div className="w-32 h-32 bg-slate-100 dark:bg-slate-800/50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner group overflow-hidden">
-            <svg className="w-14 h-14 text-slate-300 dark:text-slate-700 group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        <div className="text-center py-44 bg-white/40 dark:bg-slate-900/40 rounded-[4rem] border-2 border-dashed border-slate-200 dark:border-slate-800 transition-colors">
+          <div className="w-32 h-32 bg-slate-100 dark:bg-slate-800/80 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner group overflow-hidden">
+            <svg className="w-14 h-14 text-slate-300 dark:text-slate-600 group-hover:scale-110 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </div>
           <h3 className="text-3xl font-black text-slate-950 dark:text-white mb-3 tracking-tighter">Archivo Desierto</h3>
-          <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto text-sm font-bold leading-relaxed px-6">
-            No se han detectado registros en la tabla <code className="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-blue-600 font-mono">gallery</code>. 
-            Verifica tu conexión en Neon Dashboard.
+          <p className="text-slate-500 dark:text-slate-300 max-w-md mx-auto text-sm font-bold leading-relaxed px-6">
+            No se han detectado registros. Si configuraste la variable <code className="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-blue-600 font-mono">VITE_DATABASE_URL</code>, 
+            asegúrate de que no tenga comillas extra y que la tabla <code className="dark:text-blue-400">gallery</code> sea accesible.
           </p>
         </div>
       ) : (
@@ -149,9 +149,9 @@ const Gallery: React.FC<GalleryProps> = ({
               key={img.id}
               onClick={() => onOpenLightbox(idx)}
               className={`
-                group relative bg-white dark:bg-slate-900/50 overflow-hidden cursor-pointer transition-all duration-700 animate-slide-up
-                ${viewMode === ViewMode.NORMAL ? 'rounded-[3rem] border border-slate-100 dark:border-slate-800/80 hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.4)] hover:-translate-y-4' : ''}
-                ${viewMode === ViewMode.MINIATURE ? 'rounded-3xl border border-slate-100 dark:border-slate-800/80 p-2.5 hover:shadow-2xl dark:hover:shadow-black hover:scale-105' : ''}
+                group relative bg-white dark:bg-slate-900/80 overflow-hidden cursor-pointer transition-all duration-700 animate-slide-up
+                ${viewMode === ViewMode.NORMAL ? 'rounded-[3rem] border border-slate-100 dark:border-slate-800 hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] hover:-translate-y-4' : ''}
+                ${viewMode === ViewMode.MINIATURE ? 'rounded-3xl border border-slate-100 dark:border-slate-800 p-2.5 hover:shadow-2xl dark:hover:shadow-black hover:scale-105' : ''}
                 ${viewMode === ViewMode.LIST ? 'flex items-center gap-10 p-10 rounded-[3.5rem] hover:bg-white dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 shadow-sm' : ''}
               `}
               style={{ animationDelay: `${idx * 40}ms` }}
@@ -169,11 +169,11 @@ const Gallery: React.FC<GalleryProps> = ({
                   className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 
                 {viewMode === ViewMode.NORMAL && (
                   <div className="absolute bottom-6 left-6 right-6 flex justify-center items-center transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <span className="px-5 py-2.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl text-[10px] font-black text-slate-950 dark:text-white uppercase tracking-[0.2em] border border-white/20 shadow-xl">
+                    <span className="px-5 py-2.5 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md rounded-2xl text-[10px] font-black text-slate-950 dark:text-white uppercase tracking-[0.2em] border border-white/20 shadow-xl">
                       Ver Recurso
                     </span>
                   </div>
@@ -193,9 +193,9 @@ const Gallery: React.FC<GalleryProps> = ({
                       #{img.id}
                     </p>
                   </div>
-                  <p className={`text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-tight flex items-center gap-2 ${viewMode === ViewMode.MINIATURE ? 'text-[9px] justify-center' : 'text-[13px]'}`}>
+                  <p className={`text-slate-500 dark:text-slate-300 font-extrabold uppercase tracking-tight flex items-center gap-2 ${viewMode === ViewMode.MINIATURE ? 'text-[9px] justify-center' : 'text-[13px]'}`}>
                     <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
-                    <span className="text-slate-800 dark:text-slate-200 truncate">{img.carpeta}</span>
+                    <span className="text-slate-800 dark:text-slate-100 truncate">{img.carpeta}</span>
                   </p>
                 </div>
 
@@ -207,14 +207,14 @@ const Gallery: React.FC<GalleryProps> = ({
                 `}>
                   <button 
                     onClick={(e) => copyToClipboard(e, img.url)}
-                    className="p-4 rounded-[1.25rem] bg-slate-100/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all shadow-sm active:scale-90"
+                    className="p-4 rounded-[1.25rem] bg-slate-100/50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-200 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all shadow-sm active:scale-90"
                     title="Copiar URL de Imagen"
                   >
                     <svg className={`${viewMode === ViewMode.MINIATURE ? 'w-4 h-4' : 'w-5.5 h-5.5'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
                   </button>
                   <button 
                     onClick={(e) => downloadImage(e, img.url, `galeriaitor_${img.id}.jpg`)}
-                    className="p-4 rounded-[1.25rem] bg-slate-100/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition-all shadow-sm active:scale-90"
+                    className="p-4 rounded-[1.25rem] bg-slate-100/50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-200 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition-all shadow-sm active:scale-90"
                     title="Descargar Activo"
                   >
                     <svg className={`${viewMode === ViewMode.MINIATURE ? 'w-4 h-4' : 'w-5.5 h-5.5'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
