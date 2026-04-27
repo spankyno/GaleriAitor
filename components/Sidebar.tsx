@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ folders, currentFolder, onSelectFolde
               Email
             </a>
             <a 
-              href="https://aitorblog.infinityfreeapp.com" 
+              href="https://aitorsanchez.pages.dev/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-4 px-5 py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-transparent dark:border-slate-800 hover:border-blue-600 transition-all text-sm font-bold text-slate-600 dark:text-slate-300 group"
