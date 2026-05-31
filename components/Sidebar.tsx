@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ folders, currentFolder, onSelectFolde
               Visitar Blog
             </a>
             <a 
-              href="https://aitor-blog-contacto.vercel.app/" 
+              href="https://aitorsanchez.pages.dev/contacto/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-4 px-5 py-3.5 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold"
